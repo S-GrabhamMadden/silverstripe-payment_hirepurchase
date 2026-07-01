@@ -17,6 +17,8 @@ use Sunnysideup\Ecommerce\Money\Payment\PaymentResults\EcommercePaymentSuccess;
  */
 class HirePurchasePayment extends EcommercePayment
 {
+    private static $table_name = 'HirePurchasePayment';
+
     private static $custom_message_for_in_store_payment = '';
 
     private static $logo = 'https://www.creditcapable.co.nz/ccl.png';
@@ -37,13 +39,7 @@ class HirePurchasePayment extends EcommercePayment
 
     public function getPaymentFormFields($amount = 0, ?Order $order = null): FieldList
     {
-        return new FieldList(
-            new LiteralField(
-                'HirePurchasePayment_BeforeMessage',
-                '<div id="HirePurchasePayment_BeforeMessage"><img src="' . $this->Config()->get('logo') . '" alt="Online Finance provided by credit capable"></div>'
-            ),
-            new HiddenField('HirePurchase', 'HirePurchase', 0)
-        );
+        return FieldList::create(LiteralField::create('HirePurchasePayment_BeforeMessage', '<div id="HirePurchasePayment_BeforeMessage"><img src="' . $this->Config()->get('logo') . '" alt="Online Finance provided by credit capable"></div>'), HiddenField::create('HirePurchase', 'HirePurchase', 0));
     }
 
     public function getPaymentFormRequirements(): array
