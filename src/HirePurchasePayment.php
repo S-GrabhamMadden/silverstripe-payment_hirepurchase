@@ -2,6 +2,7 @@
 
 namespace Sunnysideup\PaymentHirePurchase;
 
+use Override;
 use SilverStripe\Core\Config\Config;
 use SilverStripe\Forms\FieldList;
 use SilverStripe\Forms\Form;
@@ -17,6 +18,8 @@ use Sunnysideup\Ecommerce\Money\Payment\PaymentResults\EcommercePaymentSuccess;
  */
 class HirePurchasePayment extends EcommercePayment
 {
+    private static $table_name = 'HirePurchasePayment';
+
     private static $custom_message_for_in_store_payment = '';
 
     private static $logo = 'https://www.creditcapable.co.nz/ccl.png';
@@ -26,6 +29,7 @@ class HirePurchasePayment extends EcommercePayment
      *
      * @param mixed $data
      */
+    #[Override]
     public function processPayment($data, Form $form)
     {
         $this->Status = EcommercePayment::PENDING_STATUS;
@@ -35,17 +39,13 @@ class HirePurchasePayment extends EcommercePayment
         return EcommercePaymentSuccess::create();
     }
 
+    #[Override]
     public function getPaymentFormFields($amount = 0, ?Order $order = null): FieldList
     {
-        return new FieldList(
-            new LiteralField(
-                'HirePurchasePayment_BeforeMessage',
-                '<div id="HirePurchasePayment_BeforeMessage"><img src="' . $this->Config()->get('logo') . '" alt="Online Finance provided by credit capable"></div>'
-            ),
-            new HiddenField('HirePurchase', 'HirePurchase', 0)
-        );
+        return FieldList::create(LiteralField::create('HirePurchasePayment_BeforeMessage', '<div id="HirePurchasePayment_BeforeMessage"><img src="' . $this->Config()->get('logo') . '" alt="Online Finance provided by credit capable"></div>'), HiddenField::create('HirePurchase', 'HirePurchase', 0));
     }
 
+    #[Override]
     public function getPaymentFormRequirements(): array
     {
         return [];
